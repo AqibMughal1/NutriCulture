@@ -1,6 +1,11 @@
 import HealthyRecipesView from "@/views/HealthyRecipesView";
+import { RouteProtection } from "@/components/auth/route-protection";
 
 export default function HealthyRecipesPage() {
-  return <HealthyRecipesView />;
+  return (
+    <RouteProtection>
+      <HealthyRecipesView />
+    </RouteProtection>
+  );
 }
 

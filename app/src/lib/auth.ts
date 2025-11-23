@@ -26,7 +26,7 @@ export const auth = betterAuth({
         react: ResetPassword({ url }),
       });
     },
-    requireEmailVerification: true,
+    requireEmailVerification: false, // Allow login without verification, but prompt for verification
   },
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {

@@ -169,14 +169,14 @@ const supportTiers = [
 export default function ServicesView() {
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto py-8 px-4 md:px-6 mt-20">
+      <div className="container mx-auto py-8 md:py-12 px-4 sm:px-6 lg:px-8 pt-20 md:pt-24">
         {/* Header Section */}
-        <div className="text-center flex flex-col gap-6 mb-32">
-          <div className="space-y-4">
-            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-green-600 via-teal-600 to-emerald-700 bg-clip-text text-transparent tracking-tight">
+        <div className="text-center flex flex-col gap-4 md:gap-6 mb-16 md:mb-32">
+          <div className="space-y-3 md:space-y-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-green-600 via-teal-600 to-emerald-700 bg-clip-text text-transparent tracking-tight px-4">
               Our Services
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed px-4">
               Six powerful modules to transform your nutrition journey with AI-powered guidance and personalized recommendations
             </p>
           </div>

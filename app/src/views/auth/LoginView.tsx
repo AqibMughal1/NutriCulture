@@ -14,12 +14,14 @@ import { authClient } from "@/lib/auth-client";
 import { LoginSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
 export default function LoginView() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -39,10 +41,12 @@ export default function LoginView() {
         },
         {
           onError(context) {
-            toast.error(context.error.message);
+            toast.error(context.error.message || "An error occurred during login");
           },
           onSuccess() {
             toast.success("Logged in successfully");
+            router.push("/");
+            router.refresh();
           },
         }
       );

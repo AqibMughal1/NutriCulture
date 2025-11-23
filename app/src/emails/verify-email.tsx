@@ -53,7 +53,7 @@ export const LinkEmail = ({ url }: LinkEmailProps) => (
           </Section>
 
           <Text style={paragraph}>
-            This verification link will expire in 24 hours for security purposes.
+            This verification link will expire in 1 hour for security purposes.
           </Text>
 
           <Text style={disclaimerText}>

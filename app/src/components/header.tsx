@@ -12,7 +12,7 @@ export const Header = () => {
   return (
     <>
       <BackgroundBeamsWithCollision>
-        <div className="min-h-screen flex flex-col justify-center items-center px-4 relative overflow-hidden">
+        <div className="min-h-screen flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 pt-16 md:pt-20 relative overflow-hidden">
           {/* Animated background elements */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-500/20 rounded-full blur-3xl animate-pulse"></div>
@@ -21,7 +21,6 @@ export const Header = () => {
           </div>
 
           <div className="w-full flex flex-col items-center my-10 relative z-20">
-            {/* Main Heading with Better Spacing */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}

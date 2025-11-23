@@ -22,6 +22,7 @@ import {
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useState } from "react";
+import { EmailVerificationModal } from "@/components/auth/email-verification-modal";
 
 export default function GetStartedView() {
   const user = useCurrentUser();
@@ -38,10 +39,17 @@ export default function GetStartedView() {
   };
 
   const handleFeature = (route: string, featureName: string, isPremium: boolean = false) => {
-    if (!user) {
+    if (!user || !session?.user) {
       toast.error("Please sign in to access features");
       router.push("/login");
       return;
+    }
+
+    // Show warning if email is not verified (but allow access)
+    if (!session.user.emailVerified) {
+      toast.warning("Please verify your email address for the best experience. Check your inbox for the verification link.", {
+        duration: 5000,
+      });
     }
 
     if (isPremium && !hasPremiumAccess) {
@@ -54,14 +62,15 @@ export default function GetStartedView() {
   };
 
   return (
-    <main className="w-full max-w-6xl mx-auto px-6 mt-20">
+    <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-24 pb-8 md:pb-12">
+      <EmailVerificationModal />
       {/* Header Section */}
-      <div className="text-center flex flex-col gap-6 mb-16">
-        <div className="space-y-4">
-          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-green-600 via-teal-600 to-emerald-700 bg-clip-text text-transparent tracking-tight">
+      <div className="text-center flex flex-col gap-4 md:gap-6 mb-8 md:mb-16">
+        <div className="space-y-3 md:space-y-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-green-600 via-teal-600 to-emerald-700 bg-clip-text text-transparent tracking-tight px-4">
             Get Started with NutriCulture
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
             Explore our six main modules: BMI Calculator, AI Meal Suggestions, Ingredient Substitution, Recipe Customization, Healthy Recipes, and Nutrition Analysis
           </p>
         </div>
@@ -71,23 +80,23 @@ export default function GetStartedView() {
       </div>
 
       {/* Cards Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
         {/* FREE - BMI Calculator Card (First Option) */}
-        <CardSpotlight className="group relative flex flex-col justify-between w-full h-[500px] p-8 transition-all duration-300 hover:scale-105 border-2 border-green-200 dark:border-green-800 hover:border-green-400 dark:hover:border-green-600 bg-gradient-to-br from-green-50/80 to-emerald-50/80 dark:from-green-950/40 dark:to-emerald-950/40 backdrop-blur-lg rounded-2xl shadow-2xl hover:shadow-3xl overflow-hidden">
+        <CardSpotlight className="group relative flex flex-col justify-between w-full min-h-[450px] md:h-[500px] p-4 sm:p-6 md:p-8 transition-all duration-300 hover:scale-[1.02] md:hover:scale-105 border-2 border-green-200 dark:border-green-800 hover:border-green-400 dark:hover:border-green-600 bg-gradient-to-br from-green-50/80 to-emerald-50/80 dark:from-green-950/40 dark:to-emerald-950/40 backdrop-blur-lg rounded-xl md:rounded-2xl shadow-2xl hover:shadow-3xl overflow-hidden">
           {/* Free Badge */}
-          <div className="absolute top-1/2 -translate-y-1/2 right-4 bg-green-500 text-white px-3 py-1 rounded-md text-sm font-bold shadow-lg z-10">
+          <div className="absolute top-2 md:top-1/2 md:-translate-y-1/2 right-2 md:right-4 bg-green-500 text-white px-2 md:px-3 py-1 rounded-md text-xs md:text-sm font-bold shadow-lg z-10">
             FREE
           </div>
           
-          <div className="flex items-center gap-4 mb-4 relative z-10">
-            <div className="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg group-hover:shadow-green-500/25 transition-all duration-300">
-              <Calculator className="h-7 w-7 text-white" />
+          <div className="flex items-start sm:items-center gap-3 md:gap-4 mb-4 relative z-10">
+            <div className="p-2 md:p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-lg md:rounded-xl shadow-lg group-hover:shadow-green-500/25 transition-all duration-300 flex-shrink-0">
+              <Calculator className="h-5 w-5 md:h-7 md:w-7 text-white" />
             </div>
-            <div>
-              <h3 className="text-2xl font-bold text-foreground group-hover:text-green-600 transition-colors duration-300">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground group-hover:text-green-600 transition-colors duration-300">
                 BMI Calculator
               </h3>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-xs md:text-sm text-muted-foreground mt-1">
                 Module 1: Calculate BMI and optionally send to AI for personalized advice
               </p>
             </div>
@@ -123,20 +132,20 @@ export default function GetStartedView() {
         </CardSpotlight>
 
         {/* FREE - AI Meal Suggestions Card */}
-        <CardSpotlight className="group relative flex flex-col justify-between w-full h-[500px] p-8 transition-all duration-300 hover:scale-105 border-2 border-teal-200 dark:border-teal-800 hover:border-teal-400 dark:hover:border-teal-600 bg-gradient-to-br from-teal-50/80 to-cyan-50/80 dark:from-teal-950/40 dark:to-cyan-950/40 backdrop-blur-lg rounded-2xl shadow-2xl hover:shadow-3xl overflow-hidden">
-          <div className="absolute top-1/2 -translate-y-1/2 right-4 bg-teal-500 text-white px-3 py-1 rounded-md text-sm font-bold shadow-lg z-10">
+        <CardSpotlight className="group relative flex flex-col justify-between w-full min-h-[450px] md:h-[500px] p-4 sm:p-6 md:p-8 transition-all duration-300 hover:scale-[1.02] md:hover:scale-105 border-2 border-teal-200 dark:border-teal-800 hover:border-teal-400 dark:hover:border-teal-600 bg-gradient-to-br from-teal-50/80 to-cyan-50/80 dark:from-teal-950/40 dark:to-cyan-950/40 backdrop-blur-lg rounded-xl md:rounded-2xl shadow-2xl hover:shadow-3xl overflow-hidden">
+          <div className="absolute top-2 md:top-1/2 md:-translate-y-1/2 right-2 md:right-4 bg-teal-500 text-white px-2 md:px-3 py-1 rounded-md text-xs md:text-sm font-bold shadow-lg z-10">
             FREE
           </div>
           
-          <div className="flex items-center gap-4 mb-4 relative z-10">
-            <div className="p-3 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl shadow-lg group-hover:shadow-teal-500/25 transition-all duration-300">
-              <Apple className="h-7 w-7 text-white" />
+          <div className="flex items-start sm:items-center gap-3 md:gap-4 mb-4 relative z-10">
+            <div className="p-2 md:p-3 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg md:rounded-xl shadow-lg group-hover:shadow-teal-500/25 transition-all duration-300 flex-shrink-0">
+              <Apple className="h-5 w-5 md:h-7 md:w-7 text-white" />
             </div>
-            <div>
-              <h3 className="text-2xl font-bold text-foreground group-hover:text-teal-600 transition-colors duration-300">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground group-hover:text-teal-600 transition-colors duration-300">
                 AI Meal Suggestions
               </h3>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-xs md:text-sm text-muted-foreground mt-1">
                 Module 2: Get AI suggestions based on preferences, health goals, and nutrition info
               </p>
             </div>
@@ -172,20 +181,20 @@ export default function GetStartedView() {
         </CardSpotlight>
 
         {/* FREE - Ingredient Substitution Card */}
-        <CardSpotlight className="group relative flex flex-col justify-between w-full h-[500px] p-8 transition-all duration-300 hover:scale-105 border-2 border-blue-200 dark:border-blue-800 hover:border-blue-400 dark:hover:border-blue-600 bg-gradient-to-br from-blue-50/80 to-indigo-50/80 dark:from-blue-950/40 dark:to-indigo-950/40 backdrop-blur-lg rounded-2xl shadow-2xl hover:shadow-3xl overflow-hidden">
-          <div className="absolute top-1/2 -translate-y-1/2 right-4 bg-blue-500 text-white px-3 py-1 rounded-md text-sm font-bold shadow-lg z-10">
+        <CardSpotlight className="group relative flex flex-col justify-between w-full min-h-[450px] md:h-[500px] p-4 sm:p-6 md:p-8 transition-all duration-300 hover:scale-[1.02] md:hover:scale-105 border-2 border-blue-200 dark:border-blue-800 hover:border-blue-400 dark:hover:border-blue-600 bg-gradient-to-br from-blue-50/80 to-indigo-50/80 dark:from-blue-950/40 dark:to-indigo-950/40 backdrop-blur-lg rounded-xl md:rounded-2xl shadow-2xl hover:shadow-3xl overflow-hidden">
+          <div className="absolute top-2 md:top-1/2 md:-translate-y-1/2 right-2 md:right-4 bg-blue-500 text-white px-2 md:px-3 py-1 rounded-md text-xs md:text-sm font-bold shadow-lg z-10">
             FREE
           </div>
 
-          <div className="flex items-center gap-4 mb-4 relative z-10">
-            <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg group-hover:shadow-blue-500/25 transition-all duration-300">
-              <UtensilsCrossed className="h-7 w-7 text-white" />
+          <div className="flex items-start sm:items-center gap-3 md:gap-4 mb-4 relative z-10">
+            <div className="p-2 md:p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg md:rounded-xl shadow-lg group-hover:shadow-blue-500/25 transition-all duration-300 flex-shrink-0">
+              <UtensilsCrossed className="h-5 w-5 md:h-7 md:w-7 text-white" />
             </div>
-            <div>
-              <h3 className="text-2xl font-bold text-foreground group-hover:text-blue-600 transition-colors duration-300">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground group-hover:text-blue-600 transition-colors duration-300">
                 Ingredient Substitution
               </h3>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-xs md:text-sm text-muted-foreground mt-1">
                 Module 3: Replace ingredients with healthier alternatives in your recipes
               </p>
             </div>
@@ -221,20 +230,20 @@ export default function GetStartedView() {
         </CardSpotlight>
 
         {/* FREE - Recipe Customization Card */}
-        <CardSpotlight className="group relative flex flex-col justify-between w-full h-[500px] p-8 transition-all duration-300 hover:scale-105 border-2 border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 bg-gradient-to-br from-purple-50/80 to-pink-50/80 dark:from-purple-950/40 dark:to-pink-950/40 backdrop-blur-lg rounded-2xl shadow-2xl hover:shadow-3xl overflow-hidden">
-          <div className="absolute top-1/2 -translate-y-1/2 right-4 bg-purple-500 text-white px-3 py-1 rounded-md text-sm font-bold shadow-lg z-10">
+        <CardSpotlight className="group relative flex flex-col justify-between w-full min-h-[450px] md:h-[500px] p-4 sm:p-6 md:p-8 transition-all duration-300 hover:scale-[1.02] md:hover:scale-105 border-2 border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 bg-gradient-to-br from-purple-50/80 to-pink-50/80 dark:from-purple-950/40 dark:to-pink-950/40 backdrop-blur-lg rounded-xl md:rounded-2xl shadow-2xl hover:shadow-3xl overflow-hidden">
+          <div className="absolute top-2 md:top-1/2 md:-translate-y-1/2 right-2 md:right-4 bg-purple-500 text-white px-2 md:px-3 py-1 rounded-md text-xs md:text-sm font-bold shadow-lg z-10">
             FREE
           </div>
 
-          <div className="flex items-center gap-4 mb-4 relative z-10">
-            <div className="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg group-hover:shadow-purple-500/25 transition-all duration-300">
-              <Edit className="h-7 w-7 text-white" />
+          <div className="flex items-start sm:items-center gap-3 md:gap-4 mb-4 relative z-10">
+            <div className="p-2 md:p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg md:rounded-xl shadow-lg group-hover:shadow-purple-500/25 transition-all duration-300 flex-shrink-0">
+              <Edit className="h-5 w-5 md:h-7 md:w-7 text-white" />
             </div>
-            <div>
-              <h3 className="text-2xl font-bold text-foreground group-hover:text-purple-600 transition-colors duration-300">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground group-hover:text-purple-600 transition-colors duration-300">
                 Recipe Customization
               </h3>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-xs md:text-sm text-muted-foreground mt-1">
                 Module 4: Edit and modify AI suggestions based on your available ingredients
               </p>
             </div>
@@ -270,20 +279,20 @@ export default function GetStartedView() {
         </CardSpotlight>
 
         {/* FREE - Healthy Recipes Card */}
-        <CardSpotlight className="group relative flex flex-col justify-between w-full h-[500px] p-8 transition-all duration-300 hover:scale-105 border-2 border-orange-200 dark:border-orange-800 hover:border-orange-400 dark:hover:border-orange-600 bg-gradient-to-br from-orange-50/80 to-red-50/80 dark:from-orange-950/40 dark:to-red-950/40 backdrop-blur-lg rounded-2xl shadow-2xl hover:shadow-3xl overflow-hidden">
-          <div className="absolute top-1/2 -translate-y-1/2 right-4 bg-orange-500 text-white px-3 py-1 rounded-md text-sm font-bold shadow-lg z-10">
+        <CardSpotlight className="group relative flex flex-col justify-between w-full min-h-[450px] md:h-[500px] p-4 sm:p-6 md:p-8 transition-all duration-300 hover:scale-[1.02] md:hover:scale-105 border-2 border-orange-200 dark:border-orange-800 hover:border-orange-400 dark:hover:border-orange-600 bg-gradient-to-br from-orange-50/80 to-red-50/80 dark:from-orange-950/40 dark:to-red-950/40 backdrop-blur-lg rounded-xl md:rounded-2xl shadow-2xl hover:shadow-3xl overflow-hidden">
+          <div className="absolute top-2 md:top-1/2 md:-translate-y-1/2 right-2 md:right-4 bg-orange-500 text-white px-2 md:px-3 py-1 rounded-md text-xs md:text-sm font-bold shadow-lg z-10">
             FREE
           </div>
           
-          <div className="flex items-center gap-4 mb-4 relative z-10">
-            <div className="p-3 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg group-hover:shadow-orange-500/25 transition-all duration-300">
-              <ChefHat className="h-7 w-7 text-white" />
+          <div className="flex items-start sm:items-center gap-3 md:gap-4 mb-4 relative z-10">
+            <div className="p-2 md:p-3 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg md:rounded-xl shadow-lg group-hover:shadow-orange-500/25 transition-all duration-300 flex-shrink-0">
+              <ChefHat className="h-5 w-5 md:h-7 md:w-7 text-white" />
             </div>
-            <div>
-              <h3 className="text-2xl font-bold text-foreground group-hover:text-orange-600 transition-colors duration-300">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground group-hover:text-orange-600 transition-colors duration-300">
                 Healthy Recipes
               </h3>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-xs md:text-sm text-muted-foreground mt-1">
                 Module 5: South Asian & Middle Eastern dishes with calorie and cuisine filters
               </p>
             </div>
@@ -319,25 +328,26 @@ export default function GetStartedView() {
         </CardSpotlight>
 
         {/* PREMIUM - Image Nutrition Analysis Card */}
-        <CardSpotlight className="group relative flex flex-col justify-between w-full h-[500px] p-8 transition-all duration-300 hover:scale-105 border border-foreground/10 hover:border-pink-500/30 bg-secondary/70 dark:bg-secondary/50 backdrop-blur-lg rounded-2xl shadow-2xl hover:shadow-3xl overflow-hidden">
-          <div className={`absolute top-1/2 -translate-y-1/2 right-4 text-white px-3 py-1 rounded-md text-sm font-bold shadow-lg flex items-center gap-1 z-10 ${
+        <CardSpotlight className="group relative flex flex-col justify-between w-full min-h-[450px] md:h-[500px] p-4 sm:p-6 md:p-8 transition-all duration-300 hover:scale-[1.02] md:hover:scale-105 border border-foreground/10 hover:border-pink-500/30 bg-secondary/70 dark:bg-secondary/50 backdrop-blur-lg rounded-xl md:rounded-2xl shadow-2xl hover:shadow-3xl overflow-hidden">
+          <div className={`absolute top-2 md:top-1/2 md:-translate-y-1/2 right-2 md:right-4 text-white px-2 md:px-3 py-1 rounded-md text-xs md:text-sm font-bold shadow-lg flex items-center gap-1 z-10 ${
             hasPremiumAccess 
               ? 'bg-gradient-to-r from-green-500 to-emerald-500' 
               : 'bg-gradient-to-r from-pink-500 to-rose-500'
           }`}>
             <Crown className="h-3 w-3" />
-            {hasPremiumAccess ? 'UNLOCKED' : 'PREMIUM'}
+            <span className="hidden sm:inline">{hasPremiumAccess ? 'UNLOCKED' : 'PREMIUM'}</span>
+            <span className="sm:hidden">{hasPremiumAccess ? '✓' : '★'}</span>
           </div>
 
-          <div className="flex items-center gap-4 mb-4 relative z-10">
-            <div className="p-3 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl shadow-lg group-hover:shadow-pink-500/25 transition-all duration-300">
-              <Camera className="h-7 w-7 text-white" />
+          <div className="flex items-start sm:items-center gap-3 md:gap-4 mb-4 relative z-10">
+            <div className="p-2 md:p-3 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg md:rounded-xl shadow-lg group-hover:shadow-pink-500/25 transition-all duration-300 flex-shrink-0">
+              <Camera className="h-5 w-5 md:h-7 md:w-7 text-white" />
             </div>
-            <div>
-              <h3 className="text-2xl font-bold text-foreground group-hover:text-pink-600 transition-colors duration-300">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground group-hover:text-pink-600 transition-colors duration-300">
                 Nutrition Analysis
               </h3>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-xs md:text-sm text-muted-foreground mt-1">
                 Module 6: Image-based analysis identifying proteins, vitamins, and fats
               </p>
             </div>

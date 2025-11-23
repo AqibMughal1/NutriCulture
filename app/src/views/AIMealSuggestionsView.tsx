@@ -35,7 +35,7 @@ export default function AIMealSuggestionsView() {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-8 md:py-12 px-4 sm:px-6 lg:px-8 pt-20 md:pt-24">
       <div className="max-w-4xl mx-auto">
         <Card>
           <CardHeader>

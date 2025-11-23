@@ -30,24 +30,26 @@ export const Navbar = async () => {
   ];
 
   return (
-    <nav className="container absolute top-0 w-full z-50 transition">
-      <div className="mx-auto  py-4">
-        <div className="flex justify-between items-center">
-          <MobileSidebar />
-          <Link href="/">
-            <Logo />
-          </Link>
-          <div className="hidden sm:flex h-[40px] items-center text-lg md:text-lg font-medium gap-4 transition-all">
-            <div className="flex items-center h-full text-base font-medium">
+    <nav className="fixed top-0 left-0 right-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border/40 transition">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16 md:h-20">
+          <div className="flex items-center gap-4">
+            <MobileSidebar />
+            <Link href="/" className="flex-shrink-0">
+              <Logo />
+            </Link>
+          </div>
+          <div className="hidden sm:flex h-full items-center text-base md:text-lg font-medium gap-2 md:gap-4 transition-all">
+            <div className="flex items-center h-full text-sm md:text-base font-medium">
               {navPages
                 .filter((page) => page.show)
                 .map((page, index) => (
                   <Link
                     key={index}
                     href={page.link}
-                    className="flex items-center h-full transition-all duration-300 px-4 rounded-md group"
+                    className="flex items-center h-full transition-all duration-300 px-2 md:px-4 rounded-md group"
                   >
-                    <span className="text-gray-700 dark:text-gray-300 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:via-purple-600 group-hover:to-indigo-700 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
+                    <span className="text-gray-700 dark:text-gray-300 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:via-purple-600 group-hover:to-indigo-700 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 whitespace-nowrap">
                       {page.title}
                     </span>
                   </Link>
@@ -55,15 +57,15 @@ export const Navbar = async () => {
               {isAdmin && (
                 <Link
                   href="/dashboard"
-                  className="flex items-center h-full transition-all duration-300 px-4 rounded-md group"
+                  className="flex items-center h-full transition-all duration-300 px-2 md:px-4 rounded-md group"
                 >
-                  <span className="text-gray-700 dark:text-gray-300 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:via-purple-600 group-hover:to-indigo-700 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
+                  <span className="text-gray-700 dark:text-gray-300 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:via-purple-600 group-hover:to-indigo-700 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 whitespace-nowrap">
                     Dashboard
                   </span>
                 </Link>
               )}
             </div>
-            <div className="flex h-full gap-4">
+            <div className="flex h-full items-center gap-2 md:gap-4 ml-2">
               <ModeToggle />
               <UserButton user={(session?.user || null) as User | null} />
             </div>

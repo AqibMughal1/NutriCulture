@@ -124,7 +124,7 @@ export const PricingCard = () => {
         </p>
       </div>
 
-      {/* Why Choose OptimalCloud - Enhanced */}
+      {/* Why Choose NutriCulture - Enhanced */}
       <div className="w-full max-w-6xl mx-auto mb-16 px-4">
         <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50 dark:from-blue-950/40 dark:via-purple-950/40 dark:to-indigo-950/40 rounded-3xl p-8 md:p-12 border border-foreground/10 shadow-2xl">
           {/* Background decoration */}

@@ -10,9 +10,9 @@ export async function POST(request: Request) {
         const { email } = await request.json();
 
         const { data, error } = await resend.emails.send({
-            from: "Optimal Cloud <noreply@optimalcloud.live>",
+            from: "NutriCulture <noreply@nutriculture.live>",
             to: [email],
-            subject: "OptimalCloud.ai Subscriptions",
+            subject: "NutriCulture Subscriptions",
             react: RepoEmail(),
         });
 

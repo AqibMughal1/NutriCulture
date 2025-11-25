@@ -60,10 +60,10 @@ export default function Loading() {
           className="text-center"
         >
           <h2 className="text-xl font-semibold text-foreground mb-2">
-            OptimalCloud.Ai
+            NutriCulture
           </h2>
           <p className="text-sm text-muted-foreground">
-            Optimizing your cloud experience...
+            Tracking your nutrition journey...
           </p>
         </motion.div>
 

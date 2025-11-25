@@ -10,8 +10,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "OptimalCloud.Ai",
-  description: "The best Cloud Optimizer the web 🌎 🚀",
+  title: "NutriCulture",
+  description: "The best nutrition tracker the web 🌎 🚀",
 };
 
 export default async function RootLayout({

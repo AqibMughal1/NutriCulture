@@ -97,6 +97,7 @@ export const projects = pgTable("projects", {
       "existing-deployment-guide",
       "submit-requirements-to-get-deployment-guide",
       "upload-config-to-get-recommendations",
+      "nutrition-chat",
     ],
   })
     .notNull()

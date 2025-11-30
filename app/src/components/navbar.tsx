@@ -23,8 +23,8 @@ export const Navbar = async () => {
       show: true,
     },
     {
-      title: "Projects",
-      link: "/projects",
+      title: "Chat",
+      link: "/nutrition-chat",
       show: isLoggedIn,
     },
   ];

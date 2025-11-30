@@ -20,10 +20,6 @@ const sidebarPages = [
     title: "Pricing",
   },
   {
-    link: "/projects",
-    title: "Projects",
-  },
-  {
     link: "#profile",
     title: "Profile",
   },

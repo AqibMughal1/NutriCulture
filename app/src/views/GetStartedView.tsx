@@ -18,6 +18,7 @@ import {
   Sparkles,
   Heart,
   Brain,
+  MessageCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -62,7 +63,7 @@ export default function GetStartedView() {
   };
 
   return (
-    <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-24 pb-8 md:pb-12">
+    <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-24 pb-8 md:pb-12 mt-14 md:mt-20">
       <EmailVerificationModal />
       {/* Header Section */}
       <div className="text-center flex flex-col gap-4 md:gap-6 mb-8 md:mb-16">
@@ -71,7 +72,7 @@ export default function GetStartedView() {
             Get Started with NutriCulture
           </h1>
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
-            Explore our six main modules: BMI Calculator, AI Meal Suggestions, Ingredient Substitution, Recipe Customization, Healthy Recipes, and Nutrition Analysis
+            Start your personalized nutrition journey with our 5-step workflow. Begin with BMI calculation to determine your health goal, then explore nutrition analysis, meal recommendations, recipe generation, and healthy substitutes.
           </p>
         </div>
         <div className="flex justify-center">
@@ -97,7 +98,7 @@ export default function GetStartedView() {
                 BMI Calculator
               </h3>
               <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                Module 1: Calculate BMI and optionally send to AI for personalized advice
+                Step 1: Calculate BMI with multiple units (cm, ft/in, kg, lb). System determines your goal (lose/gain weight) and saves it for all modules.
               </p>
             </div>
           </div>
@@ -106,15 +107,15 @@ export default function GetStartedView() {
             <ul className="flex flex-col gap-4">
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Calculate your BMI instantly</span>
+                <span className="text-foreground/90">Support for multiple units (cm, ft/in, kg, lb)</span>
               </li>
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Get health category assessment</span>
+                <span className="text-foreground/90">Automatic goal determination (lose/gain weight)</span>
               </li>
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Optional: Send BMI to AI for personalized advice</span>
+                <span className="text-foreground/90">BMI data shared across all modules</span>
               </li>
             </ul>
 
@@ -146,7 +147,7 @@ export default function GetStartedView() {
                 AI Meal Suggestions
               </h3>
               <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                Module 2: Get AI suggestions based on preferences, health goals, and nutrition info
+                Step 3: Enter eating preferences and location. Get restaurant recommendations with dishes near you.
               </p>
             </div>
           </div>
@@ -155,15 +156,15 @@ export default function GetStartedView() {
             <ul className="flex flex-col gap-4">
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Based on your preferences</span>
+                <span className="text-foreground/90">Enter eating preferences and dietary restrictions</span>
               </li>
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Health goals consideration</span>
+                <span className="text-foreground/90">Provide address and city for location-based results</span>
               </li>
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Detailed nutrition info (proteins, vitamins, fats)</span>
+                <span className="text-foreground/90">Get restaurant recommendations with addresses</span>
               </li>
             </ul>
 
@@ -195,7 +196,7 @@ export default function GetStartedView() {
                 Ingredient Substitution
               </h3>
               <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                Module 3: Replace ingredients with healthier alternatives in your recipes
+                Step 5: Enter minimum ingredients you have. Get healthy substitute recipes with minimal ingredients based on your goal.
               </p>
             </div>
           </div>
@@ -204,15 +205,15 @@ export default function GetStartedView() {
             <ul className="flex flex-col gap-4">
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Upload your recipe</span>
+                <span className="text-foreground/90">Enter minimum ingredients available</span>
               </li>
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">AI suggests healthier alternatives</span>
+                <span className="text-foreground/90">Get healthy substitutes based on your goal</span>
               </li>
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Get optimized recipe version</span>
+                <span className="text-foreground/90">Simple recipes with minimal ingredients</span>
               </li>
             </ul>
 
@@ -244,7 +245,7 @@ export default function GetStartedView() {
                 Recipe Customization
               </h3>
               <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                Module 4: Edit and modify AI suggestions based on your available ingredients
+                Step 4: Enter ingredients you have. Get healthy recipe suggestions tailored to your BMI goal.
               </p>
             </div>
           </div>
@@ -253,15 +254,15 @@ export default function GetStartedView() {
             <ul className="flex flex-col gap-4">
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Modify AI recommendations</span>
+                <span className="text-foreground/90">Enter ingredients you have available</span>
               </li>
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Replace unavailable ingredients</span>
+                <span className="text-foreground/90">Get healthy recipe suggestions</span>
               </li>
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Get updated recipe suggestions</span>
+                <span className="text-foreground/90">Recipes optimized for your BMI goal</span>
               </li>
             </ul>
 
@@ -293,7 +294,7 @@ export default function GetStartedView() {
                 Healthy Recipes
               </h3>
               <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                Module 5: South Asian & Middle Eastern dishes with calorie and cuisine filters
+                Step 4: Enter ingredients you have. Get healthy recipe suggestions tailored to your BMI goal.
               </p>
             </div>
           </div>
@@ -302,15 +303,15 @@ export default function GetStartedView() {
             <ul className="flex flex-col gap-4">
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Filter by calorie range</span>
+                <span className="text-foreground/90">Enter ingredients you have available</span>
               </li>
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Cuisine preferences</span>
+                <span className="text-foreground/90">Get healthy recipe suggestions</span>
               </li>
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Personalized recommendations</span>
+                <span className="text-foreground/90">Recipes optimized for your BMI goal</span>
               </li>
             </ul>
             
@@ -348,7 +349,7 @@ export default function GetStartedView() {
                 Nutrition Analysis
               </h3>
               <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                Module 6: Image-based analysis identifying proteins, vitamins, and fats
+                Step 2: Upload food picture with optional weight. Get detailed nutrition breakdown (proteins, fats, vitamins, etc.).
               </p>
             </div>
           </div>
@@ -357,15 +358,15 @@ export default function GetStartedView() {
             <ul className="flex flex-col gap-4">
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Upload meal image</span>
+                <span className="text-foreground/90">Upload food picture</span>
               </li>
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Identify proteins, vitamins, fats</span>
+                <span className="text-foreground/90">Optional: Add estimated weight</span>
               </li>
               <li className="flex items-center gap-3 group/item">
                 <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
-                <span className="text-foreground/90">Detailed nutritional breakdown</span>
+                <span className="text-foreground/90">Get nutrition breakdown (proteins, fats, vitamins)</span>
               </li>
             </ul>
 
@@ -380,6 +381,55 @@ export default function GetStartedView() {
                   <Lock className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
                 )}
                 Analyze Image
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+              </Button>
+            </div>
+          </div>
+        </CardSpotlight>
+
+        {/* FREE - Nutrition Chat Card */}
+        <CardSpotlight className="group relative flex flex-col justify-between w-full min-h-[450px] md:h-[500px] p-4 sm:p-6 md:p-8 transition-all duration-300 hover:scale-[1.02] md:hover:scale-105 border-2 border-indigo-200 dark:border-indigo-800 hover:border-indigo-400 dark:hover:border-indigo-600 bg-gradient-to-br from-indigo-50/80 to-purple-50/80 dark:from-indigo-950/40 dark:to-purple-950/40 backdrop-blur-lg rounded-xl md:rounded-2xl shadow-2xl hover:shadow-3xl overflow-hidden">
+          <div className="absolute top-2 md:top-1/2 md:-translate-y-1/2 right-2 md:right-4 bg-indigo-500 text-white px-2 md:px-3 py-1 rounded-md text-xs md:text-sm font-bold shadow-lg z-10">
+            FREE
+          </div>
+          
+          <div className="flex items-start sm:items-center gap-3 md:gap-4 mb-4 relative z-10">
+            <div className="p-2 md:p-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg md:rounded-xl shadow-lg group-hover:shadow-indigo-500/25 transition-all duration-300 flex-shrink-0">
+              <MessageCircle className="h-5 w-5 md:h-7 md:w-7 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground group-hover:text-indigo-600 transition-colors duration-300">
+                Nutrition Chat
+              </h3>
+              <p className="text-xs md:text-sm text-muted-foreground mt-1">
+                Chat with AI about nutrition, recreate meal plans, get answers to your questions
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex flex-col gap-6 relative z-10 flex-1">
+            <ul className="flex flex-col gap-4">
+              <li className="flex items-center gap-3 group/item">
+                <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
+                <span className="text-foreground/90">Ask nutrition questions</span>
+              </li>
+              <li className="flex items-center gap-3 group/item">
+                <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
+                <span className="text-foreground/90">Recreate meal plans you don't like</span>
+              </li>
+              <li className="flex items-center gap-3 group/item">
+                <CheckCircle className="h-5 w-5 text-green-500 group-hover/item:scale-110 transition-transform duration-200" />
+                <span className="text-foreground/90">Get personalized dietary advice</span>
+              </li>
+            </ul>
+
+            <div className="mt-auto">
+              <Button
+                className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-semibold py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl group"
+                onClick={() => handleFeature("/nutrition-chat", "Nutrition Chat")}
+              >
+                <MessageCircle className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                Start Chatting
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
               </Button>
             </div>

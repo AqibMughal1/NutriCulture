@@ -1,76 +1,90 @@
-# OptimalCloud.ai
+# NutriCulture
 
-OptimalCloud.ai is an innovative AI-powered platform that provides intelligent cloud deployment guidance and optimization recommendations. Our platform combines an interactive AI assistant with comprehensive project management tools to help developers and organizations deploy, optimize, and manage their cloud infrastructure efficiently.
+NutriCulture is an innovative AI-powered nutrition platform that provides personalized nutrition guidance, meal planning, and healthy lifestyle management. Our platform combines an interactive AI assistant with comprehensive nutrition analysis tools to help users achieve their health goals through intelligent meal recommendations, recipe customization, and dietary advice.
 
 ## ✨ What We Offer
 
-### 🤖 **AI-Powered Cloud Assistant**
-- **Interactive Chat Interface**: Real-time conversation with AI assistant specialized in cloud deployment
-- **Project-Specific Guidance**: Tailored recommendations based on your project type and requirements
-- **File Upload & Analysis**: Upload configuration files, logs, and scripts for intelligent analysis
-- **Multi-Cloud Expertise**: Support for AWS, Azure, and Google Cloud Platform
+### 🎯 **5-Step Personalized Nutrition Workflow**
 
-### 🚀 **Four Core Project Types**
+Start your personalized nutrition journey with our comprehensive workflow designed to guide you from health assessment to meal planning.
 
-#### 1. **New Deployment Guide** (Free)
-- Step-by-step deployment instructions for new applications
-- Cloud provider selection guidance
-- Infrastructure setup recommendations
-- Best practices for deployment architecture
+#### 1. **BMI Calculator** (FREE)
+- Calculate your Body Mass Index with multiple unit support (cm, ft/in, kg, lb)
+- Automatic goal determination (lose/gain/maintain weight)
+- BMI data shared across all modules for personalized recommendations
+- Health category assessment
 
-#### 2. **Existing Project Optimization** (Premium)
-- Analyze and optimize current cloud deployments
-- Cost reduction strategies
-- Performance improvement recommendations
-- Security and compliance enhancements
+#### 2. **Nutrition Analysis** (PREMIUM)
+- Upload food pictures with optional weight estimation
+- Get detailed nutrition breakdown (proteins, fats, vitamins, minerals)
+- AI-powered image recognition and analysis
+- Instant nutritional insights
 
-#### 3. **Custom Deployment Requirements** (Premium)
-- Submit detailed application requirements
-- Receive AI-generated deployment strategies
-- Customized configuration templates
-- Architecture recommendations
+#### 3. **AI Meal Suggestions** (FREE)
+- Enter eating preferences and dietary restrictions
+- Provide address and city for location-based restaurant recommendations
+- Get personalized meal plans based on your BMI goal
+- Restaurant recommendations with addresses
 
-#### 4. **Configuration Analysis** (Premium)
-- Upload existing configuration files
-- Automated optimization suggestions
-- Cost and performance analysis
-- Security vulnerability identification
+#### 4. **Recipe Customization & Healthy Recipes** (FREE)
+- Enter ingredients you have available
+- Get healthy recipe suggestions tailored to your BMI goal
+- Recipes optimized for your health objectives
+- Discover healthy South Asian and Middle Eastern dishes
+
+#### 5. **Ingredient Substitution** (FREE)
+- Enter minimum ingredients you have
+- Get healthy substitute recipes with minimal ingredients
+- Substitutions based on your health goal
+- Simple recipes with minimal ingredients
+
+### 💬 **Additional Features**
+
+#### **Nutrition Chat** (FREE)
+- Chat with AI about nutrition, meal planning, and dietary advice
+- Recreate meal plans you don't like
+- Get answers to nutrition questions
+- Personalized dietary guidance based on your BMI and goals
 
 ### 💰 **Pricing Tiers**
 
 #### Free Tier
-- New Deployment Configuration Guide
-- Basic cloud deployment recommendations
+- BMI Calculator
+- AI Meal Suggestions
+- Recipe Customization
+- Healthy Recipes
+- Ingredient Substitution
+- Nutrition Chat
 - Community support
-- Limited to 5 configurations per month
 
-#### OptimalCloud Pro ($299/month)
+#### Premium ($9.99/month)
 - All Free Tier features
-- Existing Project Optimization
-- Custom Deployment Requirements
-- Configuration File Analysis
-- Unlimited configurations
-- Priority 24/7 support
-- Advanced AI recommendations
+- Image Nutrition Analysis
+- Priority AI support
+- Advanced recommendations
+- 30-day free trial
+- Cancel anytime
 
-### 🎯 **Key Features**
+## 🎯 **Key Features**
 
-- **Project Management**: Create, organize, and track multiple cloud projects
-- **Real-time Chat**: Interactive AI assistant with typing indicators and file sharing
-- **Multi-Cloud Support**: AWS, Azure, and Google Cloud Platform integration
+- **AI-Powered Nutrition Assistant**: Real-time conversation with specialized nutrition AI
+- **BMI-Based Personalization**: All recommendations tailored to your health goals
+- **Image Analysis**: Upload meal photos for instant nutrition breakdown (Premium)
+- **Location-Based Recommendations**: Get restaurant suggestions near you
+- **Recipe Generator**: Discover healthy recipes based on available ingredients
+- **Ingredient Substitution**: Transform recipes into healthier versions
+- **Multi-Unit Support**: Flexible measurement units (metric and imperial)
 - **Modern UI**: Responsive design with gradient themes and smooth animations
-- **Authentication**: Secure user accounts with role-based access control
-- **Admin Dashboard**: Analytics and user management for administrators
-- **File Upload**: Support for configuration files, logs, and documentation
-- **Progressive Web App**: Optimized for desktop and mobile devices
+- **Authentication**: Secure user accounts with email verification
+- **Dashboard**: Track your nutrition goals and progress
 
 ## 🏗️ Tech Stack
 
-- **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind CSS
+- **Frontend**: Next.js 15 (App Router), TypeScript, Tailwind CSS
 - **UI Components**: Shadcn UI with custom animations and gradients
 - **Database**: PostgreSQL with DrizzleORM
-- **Authentication**: NextAuth.js with multiple providers
-- **AI Integration**: Custom chat interface with streaming responses
+- **Authentication**: Better Auth with email verification
+- **AI Integration**: OpenAI SDK with streaming responses
 - **Email**: React Email for transactional emails
 - **Payments**: Stripe integration for subscriptions
 - **Deployment**: Vercel-ready with modern CI/CD
@@ -82,14 +96,16 @@ OptimalCloud.ai is an innovative AI-powered platform that provides intelligent c
 - Node.js 18+ 
 - PostgreSQL database
 - pnpm, npm, or yarn
-- Cloud provider account (AWS/Azure/GCP)
+- OpenAI API key (for AI features)
+- Stripe account (for payments)
+- Resend API key (for emails)
 
 ### Environment Setup
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/aqibmughal/optimal-cloud-ai.git
-cd optimal-cloud-ai
+git clone <repository-url>
+cd Nutriculture
 ```
 
 2. **Install dependencies:**
@@ -98,16 +114,21 @@ pnpm install
 ```
 
 3. **Configure environment variables:**
+
+Create a `.env` file in the root directory:
+
 ```env
 # Database Configuration
-DATABASE_URL=postgresql://username:password@localhost:5432/optimal_cloud
+DATABASE_URL=postgresql://username:password@localhost:5432/nutriculture
 
-# Authentication
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your-secret-key
+# Authentication (Better Auth)
+BETTER_AUTH_SECRET=your-secret-key
+BETTER_AUTH_URL=http://localhost:3000
 
 # AI Configuration
 OPENAI_API_KEY=your-openai-api-key
+# OR use OpenRouter
+OPENROUTER_API_KEY=your-openrouter-api-key
 
 # Email Configuration
 RESEND_API_KEY=your-resend-api-key
@@ -116,63 +137,103 @@ RESEND_API_KEY=your-resend-api-key
 STRIPE_SECRET_KEY=your-stripe-secret-key
 STRIPE_WEBHOOK_SECRET=your-stripe-webhook-secret
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your-stripe-publishable-key
+
+# File Upload (Vercel Blob)
+BLOB_READ_WRITE_TOKEN=your-vercel-blob-token
 ```
 
 4. **Set up the database:**
 ```bash
-pnpm drizzle-kit push
+pnpm db:push
+```
+
+Or generate migrations:
+```bash
+pnpm db:generate
 ```
 
 5. **Run the development server:**
 ```bash
-pnpm run dev
+pnpm dev
 ```
 
 Visit `http://localhost:3000` to access the application.
 
+### Available Scripts
+
+- `pnpm dev` - Start development server with Turbopack
+- `pnpm build` - Build for production
+- `pnpm start` - Start production server
+- `pnpm lint` - Run ESLint
+- `pnpm db:generate` - Generate database migrations
+- `pnpm db:push` - Push database schema changes
+- `pnpm db:studio` - Open Drizzle Studio
+- `pnpm email` - Start React Email dev server
+
 ## 📁 Project Structure
 
 ```
-├── app/                    # Next.js 14 app router
-│   ├── (root)/            # Main application routes
-│   │   ├── (routes)/      # Protected routes
-│   │   │   ├── dashboard/ # Admin dashboard
-│   │   │   ├── projects/  # Project management
-│   │   │   ├── services/  # Services page
-│   │   │   └── pricing/   # Pricing page
-│   │   └── (auth)/        # Authentication pages
-│   └── api/               # API routes
-├── components/            # Reusable UI components
-│   ├── ui/               # Shadcn UI components
-│   └── ...               # Custom components
-├── lib/                  # Utility functions and configurations
-│   ├── db/               # Database schema and connection
-│   ├── ai/               # AI model configuration
-│   └── auth.ts           # Authentication setup
-├── actions/              # Server actions
-├── views/                # Page view components
-└── schemas/              # Zod validation schemas
+├── app/                          # Next.js 15 app router
+│   ├── (root)/                   # Main application routes
+│   │   ├── (routes)/             # Protected routes
+│   │   │   ├── dashboard/        # User dashboard
+│   │   │   ├── settings/         # User settings
+│   │   │   ├── services/         # Services page
+│   │   │   └── pricing/          # Pricing page
+│   │   └── (auth)/               # Authentication pages
+│   │       ├── login/            # Login page
+│   │       ├── register/         # Registration page
+│   │       └── forgot-password/  # Password reset
+│   ├── api/                      # API routes
+│   │   ├── auth/                 # Authentication endpoints
+│   │   ├── bmi/                  # BMI calculation
+│   │   ├── nutrition-chat/       # Nutrition chat API
+│   │   └── upload/               # File upload handling
+│   ├── bmi-calculator/           # BMI calculator page
+│   ├── nutrition-analysis/       # Nutrition analysis page
+│   ├── ai-meal-suggestions/      # AI meal suggestions page
+│   ├── recipe-customization/     # Recipe customization page
+│   ├── healthy-recipes/          # Healthy recipes page
+│   ├── ingredient-substitution/  # Ingredient substitution page
+│   ├── nutrition-chat/           # Nutrition chat page
+│   └── get-started/              # Get started page
+├── app/src/
+│   ├── components/               # Reusable UI components
+│   │   ├── ui/                   # Shadcn UI components
+│   │   ├── auth/                 # Authentication components
+│   │   └── ...                   # Custom components
+│   ├── lib/                      # Utility functions and configurations
+│   │   ├── db/                   # Database schema and connection
+│   │   ├── ai/                   # AI model configuration
+│   │   └── auth-client.ts        # Authentication client
+│   ├── actions/                  # Server actions
+│   ├── views/                    # Page view components
+│   ├── schemas/                  # Zod validation schemas
+│   ├── contexts/                 # React contexts
+│   └── hooks/                   # Custom React hooks
+└── public/                       # Static assets
 ```
 
 ## 🔧 Core Features
 
-### AI Assistant
-- **Real-time Chat**: Interactive conversation with specialized AI
-- **Context Awareness**: Maintains conversation history and project context
-- **File Analysis**: Upload and analyze configuration files
-- **Multi-format Support**: JSON, YAML, Terraform, Docker files
+### AI Nutrition Assistant
+- **Real-time Chat**: Interactive conversation with specialized nutrition AI
+- **Context Awareness**: Maintains conversation history and user BMI/goals
+- **Image Analysis**: Upload meal photos for nutrition breakdown (Premium)
+- **Personalized Advice**: Recommendations based on BMI and health goals
 
-### Project Management
-- **Project Types**: Four distinct deployment scenarios
-- **Progress Tracking**: Monitor deployment progress and milestones
-- **Team Collaboration**: Share projects with team members
-- **Version Control**: Track changes and configurations
+### Nutrition Tools
+- **BMI Calculator**: Multi-unit support with goal determination
+- **Meal Suggestions**: Location-based restaurant recommendations
+- **Recipe Generator**: Healthy recipes based on available ingredients
+- **Ingredient Substitution**: Transform recipes into healthier versions
+- **Nutrition Analysis**: Detailed breakdown of proteins, vitamins, fats
 
-### Cloud Integration
-- **Multi-Cloud Support**: AWS, Azure, Google Cloud Platform
-- **Best Practices**: Industry-standard deployment patterns
-- **Security Focus**: Built-in security recommendations
-- **Cost Optimization**: Intelligent cost-saving suggestions
+### User Management
+- **Authentication**: Secure user accounts with email verification
+- **Dashboard**: Track nutrition goals and progress
+- **Settings**: Manage profile and preferences
+- **Premium Access**: Stripe-powered subscription management
 
 ## 🎨 UI/UX Features
 
@@ -188,23 +249,24 @@ Visit `http://localhost:3000` to access the application.
 The application uses PostgreSQL with DrizzleORM for type-safe database operations:
 
 - **Users**: User accounts and authentication
-- **Projects**: Cloud deployment projects
+- **BMI Data**: User BMI calculations and health goals
 - **Messages**: Chat conversation history
 - **Purchases**: Subscription and payment records
 
 ### API Routes
-- `/api/chat` - AI chat interface
-- `/api/auth` - Authentication endpoints
+- `/api/auth` - Authentication endpoints (Better Auth)
+- `/api/bmi` - BMI calculation endpoint
+- `/api/nutrition-chat` - Nutrition chat interface
 - `/api/upload` - File upload handling
-- `/api/emails` - Email notifications
 
 ## 🔐 Security
 
-- **Authentication**: Secure user authentication with NextAuth.js
+- **Authentication**: Secure user authentication with Better Auth
 - **Authorization**: Role-based access control (admin/user)
 - **Data Protection**: Encrypted data transmission and storage
 - **File Upload**: Secure file handling with type validation
 - **API Security**: Rate limiting and request validation
+- **Email Verification**: Required for full feature access
 
 ## 🚀 Deployment
 
@@ -212,7 +274,7 @@ The application is optimized for deployment on Vercel:
 
 1. **Build the application:**
 ```bash
-pnpm run build
+pnpm build
 ```
 
 2. **Deploy to Vercel:**
@@ -223,6 +285,16 @@ vercel --prod
 3. **Configure environment variables** in your Vercel dashboard
 4. **Set up database** and run migrations
 5. **Configure domain** and SSL certificates
+
+### Environment Variables for Production
+
+Make sure to set all required environment variables in your Vercel project settings:
+- Database URL
+- Better Auth secret and URL
+- OpenAI/OpenRouter API key
+- Resend API key
+- Stripe keys
+- Vercel Blob token
 
 ## 🤝 Contributing
 
@@ -240,13 +312,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Email**: support@optimalcloud.ai
+- **Email**: support@nutriculture.com
 - **Documentation**: Comprehensive in-app documentation
-- **Community**: Discord community for discussions
 - **Issues**: GitHub issues for bug reports and feature requests
 
 ---
 
-**Built with ❤️ by the OptimalCloud.ai Team**
+**Built with ❤️ by the NutriCulture Team**
 
-Project Link: [https://github.com/aqibmughal/optimal-cloud-ai](https://github.com/aqibmughal/optimal-cloud-ai)
+Project Link: [GitHub Repository](https://github.com/yourusername/nutriculture)

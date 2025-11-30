@@ -74,7 +74,7 @@ export const Header = () => {
                 >
                   <Button 
                     size="lg" 
-                    className="group relative overflow-hidden bg-gradient-to-r from-green-600 via-teal-600 to-emerald-600 hover:from-green-700 hover:via-teal-700 hover:to-emerald-700 text-white border-0 px-10 py-7 text-lg md:text-xl font-bold rounded-full shadow-2xl hover:shadow-green-500/50 transition-all duration-300 transform mt-4"
+                    className="group relative overflow-hidden bg-gradient-to-r from-green-600 via-teal-600 to-emerald-600 hover:from-green-700 hover:via-teal-700 hover:to-emerald-700 text-white border-0 py-7 text-lg md:text-xl font-bold rounded-full shadow-2xl hover:shadow-green-500/50 transition-all duration-300 transform mt-4"
                   >
                     <span className="relative z-10 flex items-center gap-3">
                       <Rocket className="w-6 h-6 group-hover:animate-bounce" />

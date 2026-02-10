@@ -13,7 +13,7 @@ import {
   getMostRecentUserMessage,
   getTrailingMessageId,
 } from "@/lib/utils";
-import { appendResponseMessages, streamText, UIMessage } from "ai";
+import { streamText } from "ai";
 import { notFound, redirect } from "next/navigation";
 import { NextRequest } from "next/server";
 
@@ -41,14 +41,13 @@ const getSystemPrompt = async (
 OPTIMIZATION FOCUS: ${optimizationFocus.toUpperCase()}
 OPTIMIZATION TYPE: ${optimizationFocus}
 
-${
-  configContent
-    ? `CONFIGURATION FILE CONTENT:
+${configContent
+        ? `CONFIGURATION FILE CONTENT:
 \`\`\`
 ${configContent}
 \`\`\``
-    : "No configuration file uploaded yet. Please ask the user to upload their cloud configuration file first."
-}
+        : "No configuration file uploaded yet. Please ask the user to upload their cloud configuration file first."
+      }
     `;
 
     return UPLOAD_CONFIG_OPTIMIZATION_PROMPT + optimizationContext;
@@ -68,7 +67,7 @@ export async function POST(request: NextRequest) {
     messages,
   }: {
     id: string;
-    messages: Array<UIMessage>;
+    messages: Array<any>;
   } = await request.json();
 
   const message = getMostRecentUserMessage(messages);
@@ -91,7 +90,7 @@ export async function POST(request: NextRequest) {
     id: message.id,
     role: "user",
     parts: message.parts,
-    attachments: message.experimental_attachments ?? [],
+    attachments: (message as any).experimental_attachments ?? [],
     createdAt: new Date(),
     projectId: chat.id,
   });
@@ -99,8 +98,8 @@ export async function POST(request: NextRequest) {
   const result = streamText({
     model: chatModel,
     messages,
-    system: await getSystemPrompt(chat.type, chat),
-    experimental_generateMessageId: generateUUID,
+    system: await getSystemPrompt(chat.type as any, chat),
+
     onChunk(chunk) {
       console.log(chunk);
     },
@@ -108,33 +107,36 @@ export async function POST(request: NextRequest) {
       console.log(e);
     },
     async onFinish(e) {
-      const assistantId = getTrailingMessageId({
-        messages: e.response.messages.filter(
-          (message) => message.role === "assistant"
-        ),
-      });
-
-      if (!assistantId) {
-        throw new Error("No assistant message found!");
+      if (!e.response.messages || e.response.messages.length === 0) {
+        return;
       }
 
-      const [, assistantMessage] = appendResponseMessages({
-        messages: [message],
-        responseMessages: e.response.messages,
-      });
+      const responseMessages = e.response.messages;
 
-      await db.insert(messagesTable).values({
-        id: assistantId,
-        role: "assistant",
-        parts: assistantMessage.parts,
-        attachments: assistantMessage.experimental_attachments ?? [],
-        createdAt: new Date(),
-        projectId: chat.id,
-      });
+      for (const responseMessage of responseMessages) {
+        if (responseMessage.role === 'assistant') {
+          // Convert content to parts format expected by DB if needed
+          let parts: any[] = [];
+          if (typeof responseMessage.content === 'string') {
+            parts = [{ type: 'text', text: responseMessage.content }];
+          } else if (Array.isArray(responseMessage.content)) {
+            parts = responseMessage.content;
+          }
+
+          await db.insert(messagesTable).values({
+            id: generateUUID(),
+            role: "assistant",
+            parts: parts,
+            attachments: (responseMessage as any).experimental_attachments ?? [],
+            createdAt: new Date(),
+            projectId: chat.id,
+          });
+        }
+      }
     },
   });
 
   result.consumeStream();
 
-  return result.toDataStreamResponse({});
+  return (result as any).toDataStreamResponse({});
 }

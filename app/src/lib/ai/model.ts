@@ -10,4 +10,4 @@ const openrouter = createOpenRouter({
 });
 
 // export const chatModel = openai.chat("gpt-4o");
-export const chatModel = openrouter.chat("openai/gpt-4o");
+export const chatModel = openrouter.chat("openai/gpt-4o") as any;

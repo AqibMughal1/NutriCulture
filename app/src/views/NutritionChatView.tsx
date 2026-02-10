@@ -1,6 +1,6 @@
 "use client";
 
-import { useChat } from "ai/react";
+import { useChat } from "@ai-sdk/react";
 import { useBMI } from "@/contexts/bmi-context";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -169,13 +169,12 @@ export default function NutritionChatView() {
                   const content = getMessageContent(message);
                   const isUser = message.role === "user";
                   const isLastMessage = index === messages.length - 1;
-                  
+
                   return (
                     <div
                       key={message.id}
-                      className={`flex gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500 ${
-                        isUser ? "justify-end" : "justify-start"
-                      }`}
+                      className={`flex gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500 ${isUser ? "justify-end" : "justify-start"
+                        }`}
                     >
                       {!isUser && (
                         <div className="flex-shrink-0">
@@ -187,14 +186,13 @@ export default function NutritionChatView() {
                           </div>
                         </div>
                       )}
-                      
+
                       <div className={`flex flex-col gap-2 max-w-[85%] md:max-w-[75%] ${isUser ? "items-end" : "items-start"}`}>
                         <div
-                          className={`group relative rounded-2xl px-5 py-4 shadow-lg transition-all duration-300 ${
-                            isUser
-                              ? "bg-gradient-to-br from-green-600 to-emerald-600 text-white rounded-br-sm"
-                              : "bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 text-foreground rounded-bl-sm border border-slate-200 dark:border-slate-700"
-                          }`}
+                          className={`group relative rounded-2xl px-5 py-4 shadow-lg transition-all duration-300 ${isUser
+                            ? "bg-gradient-to-br from-green-600 to-emerald-600 text-white rounded-br-sm"
+                            : "bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 text-foreground rounded-bl-sm border border-slate-200 dark:border-slate-700"
+                            }`}
                         >
                           {!isUser && (
                             <Button
@@ -211,7 +209,7 @@ export default function NutritionChatView() {
                               )}
                             </Button>
                           )}
-                          
+
                           <div className="prose prose-sm dark:prose-invert max-w-none">
                             {isUser ? (
                               <p className="whitespace-pre-wrap break-words text-white m-0">{content}</p>
@@ -220,14 +218,14 @@ export default function NutritionChatView() {
                             )}
                           </div>
                         </div>
-                        
+
                         {message.createdAt && (
                           <span className="text-xs text-muted-foreground px-2">
                             {formatDistanceToNow(new Date(message.createdAt), { addSuffix: true })}
                           </span>
                         )}
                       </div>
-                      
+
                       {isUser && (
                         <div className="flex-shrink-0">
                           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg">

@@ -8,7 +8,7 @@ import {
   getMostRecentUserMessage,
   getTrailingMessageId,
 } from "@/lib/utils";
-import { appendResponseMessages, streamText, UIMessage } from "ai";
+import { streamText } from "ai";
 import { notFound, redirect } from "next/navigation";
 import { NextRequest } from "next/server";
 
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     bmiData,
   }: {
     id: string;
-    messages: Array<UIMessage>;
+    messages: Array<any>;
     bmiData?: {
       bmi: number | null;
       category: string | null;
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
     id: message.id,
     role: "user",
     parts: message.parts,
-    attachments: message.experimental_attachments ?? [],
+    attachments: (message as any).experimental_attachments ?? [],
     createdAt: new Date(),
     projectId: chat.id,
   });
@@ -102,7 +102,7 @@ Use this information to provide personalized nutrition advice tailored to the us
     model: chatModel,
     messages,
     system: systemPrompt,
-    experimental_generateMessageId: generateUUID,
+
     onChunk(chunk) {
       console.log(chunk);
     },
@@ -110,34 +110,37 @@ Use this information to provide personalized nutrition advice tailored to the us
       console.log(e);
     },
     async onFinish(e) {
-      const assistantId = getTrailingMessageId({
-        messages: e.response.messages.filter(
-          (message) => message.role === "assistant"
-        ),
-      });
-
-      if (!assistantId) {
-        throw new Error("No assistant message found!");
+      if (!e.response.messages || e.response.messages.length === 0) {
+        return;
       }
 
-      const [, assistantMessage] = appendResponseMessages({
-        messages: [message],
-        responseMessages: e.response.messages,
-      });
+      const responseMessages = e.response.messages;
 
-      await db.insert(messagesTable).values({
-        id: assistantId,
-        role: "assistant",
-        parts: assistantMessage.parts,
-        attachments: assistantMessage.experimental_attachments ?? [],
-        createdAt: new Date(),
-        projectId: chat.id,
-      });
+      for (const responseMessage of responseMessages) {
+        if (responseMessage.role === 'assistant') {
+          // Convert content to parts format expected by DB if needed
+          let parts: any[] = [];
+          if (typeof responseMessage.content === 'string') {
+            parts = [{ type: 'text', text: responseMessage.content }];
+          } else if (Array.isArray(responseMessage.content)) {
+            parts = responseMessage.content;
+          }
+
+          await db.insert(messagesTable).values({
+            id: generateUUID(),
+            role: "assistant",
+            parts: parts,
+            attachments: (responseMessage as any).experimental_attachments ?? [],
+            createdAt: new Date(),
+            projectId: chat.id,
+          });
+        }
+      }
     },
   });
 
   result.consumeStream();
 
-  return result.toDataStreamResponse({});
+  return (result as any).toDataStreamResponse({});
 }
 

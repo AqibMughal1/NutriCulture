@@ -55,9 +55,11 @@ export default function NutritionChatView() {
 
   const isLoading = status === "submitted" || status === "streaming";
 
+  // Scroll to bottom only when messages update (not on isLoading toggle)
+  // This prevents the upward scroll glitch when the loading state starts
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isLoading]);
+  }, [messages]);
 
   const handleFormSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();

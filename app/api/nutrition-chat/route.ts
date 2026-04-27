@@ -6,9 +6,8 @@ import { messages as messagesTable, projects } from "@/lib/db/schema";
 import {
   generateUUID,
   getMostRecentUserMessage,
-  getTrailingMessageId,
 } from "@/lib/utils";
-import { appendResponseMessages, streamText, UIMessage } from "ai";
+import { streamText, convertToModelMessages } from "ai";
 import { notFound, redirect } from "next/navigation";
 import { NextRequest } from "next/server";
 
@@ -24,7 +23,7 @@ export async function POST(request: NextRequest) {
     bmiData,
   }: {
     id: string;
-    messages: Array<UIMessage>;
+    messages: Array<any>;
     bmiData?: {
       bmi: number | null;
       category: string | null;
@@ -51,15 +50,14 @@ export async function POST(request: NextRequest) {
 
   // If chat doesn't exist, create it
   if (!chat) {
-    const [newChat] = await db
+    await db
       .insert(projects)
       .values({
         id,
         name: "Nutrition Chat",
         userId: session.user.id,
         type: "nutrition-chat",
-      })
-      .returning();
+      });
 
     chat = await db.query.projects.findFirst({
       where(fields, operators) {
@@ -75,69 +73,61 @@ export async function POST(request: NextRequest) {
 
   // Save user message
   await db.insert(messagesTable).values({
-    id: message.id,
+    id: generateUUID(),
     role: "user",
     parts: message.parts,
-    attachments: message.experimental_attachments ?? [],
+    attachments: (message as any).experimental_attachments ?? [],
     createdAt: new Date(),
     projectId: chat.id,
   });
 
-  // Build system prompt with BMI context
+  // Build compact system prompt (only append BMI if set)
   let systemPrompt = NUTRITION_CHAT_SYSTEM_PROMPT;
-  if (bmiData) {
-    const bmiContext = `
-    
-USER'S CURRENT HEALTH PROFILE:
-- BMI: ${bmiData.bmi || "Not calculated yet"}
-- Category: ${bmiData.category || "Not determined"}
-- Health Goal: ${bmiData.goal === "lose" ? "Lose Weight" : bmiData.goal === "gain" ? "Gain Weight" : bmiData.goal === "maintain" ? "Maintain Weight" : "Not set"}
-
-Use this information to provide personalized nutrition advice tailored to the user's specific health goal.
-`;
-    systemPrompt += bmiContext;
+  if (bmiData?.bmi) {
+    systemPrompt += `\nUser profile — BMI: ${bmiData.bmi} (${bmiData.category}), Goal: ${bmiData.goal ?? "not set"}.`;
   }
+
+  // Cap to last 10 messages to reduce payload size and latency
+  const recentMessages = messages.slice(-7);
+  const modelMessages = await convertToModelMessages(recentMessages);
 
   const result = streamText({
     model: chatModel,
-    messages,
+    messages: modelMessages,
     system: systemPrompt,
-    experimental_generateMessageId: generateUUID,
-    onChunk(chunk) {
-      console.log(chunk);
-    },
+
     onError(e) {
       console.log(e);
     },
     async onFinish(e) {
-      const assistantId = getTrailingMessageId({
-        messages: e.response.messages.filter(
-          (message) => message.role === "assistant"
-        ),
-      });
-
-      if (!assistantId) {
-        throw new Error("No assistant message found!");
+      if (!e.response.messages || e.response.messages.length === 0) {
+        return;
       }
 
-      const [, assistantMessage] = appendResponseMessages({
-        messages: [message],
-        responseMessages: e.response.messages,
-      });
+      const responseMessages = e.response.messages;
 
-      await db.insert(messagesTable).values({
-        id: assistantId,
-        role: "assistant",
-        parts: assistantMessage.parts,
-        attachments: assistantMessage.experimental_attachments ?? [],
-        createdAt: new Date(),
-        projectId: chat.id,
-      });
+      for (const responseMessage of responseMessages) {
+        if (responseMessage.role === "assistant") {
+          let parts: any[] = [];
+          if (typeof responseMessage.content === "string") {
+            parts = [{ type: "text", text: responseMessage.content }];
+          } else if (Array.isArray(responseMessage.content)) {
+            parts = responseMessage.content;
+          }
+
+          await db.insert(messagesTable).values({
+            id: generateUUID(),
+            role: "assistant",
+            parts: parts,
+            attachments: (responseMessage as any).experimental_attachments ?? [],
+            createdAt: new Date(),
+            projectId: chat.id,
+          });
+        }
+      }
     },
   });
 
-  result.consumeStream();
-
-  return result.toDataStreamResponse({});
+  return result.toUIMessageStreamResponse();
 }
 

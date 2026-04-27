@@ -1,8 +1,9 @@
 "use client";
 
-import { useChat } from "ai/react";
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
 import { useBMI } from "@/contexts/bmi-context";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -22,47 +23,65 @@ import { formatDistanceToNow } from "date-fns";
 export default function NutritionChatView() {
   const { bmiData } = useBMI();
   const [chatId] = useState(() => generateUUID());
+  const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading, reload } = useChat({
-    api: "/api/nutrition-chat",
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/nutrition-chat",
+        body: {
+          id: chatId,
+          bmiData: {
+            bmi: bmiData.bmi,
+            category: bmiData.category,
+            goal: bmiData.goal,
+          },
+        },
+      }),
+    [chatId, bmiData.bmi, bmiData.category, bmiData.goal]
+  );
+
+  const { messages, sendMessage, regenerate, status } = useChat({
     id: chatId,
-    body: {
-      id: chatId,
-      bmiData: {
-        bmi: bmiData.bmi,
-        category: bmiData.category,
-        goal: bmiData.goal,
-      },
-    },
+    transport,
     onError: (error) => {
       console.error("Chat error:", error);
       toast.error("Failed to send message. Please try again.");
     },
   });
 
+  const isLoading = status === "submitted" || status === "streaming";
+
+  // Scroll to bottom only when messages update (not on isLoading toggle)
+  // This prevents the upward scroll glitch when the loading state starts
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isLoading]);
+  }, [messages]);
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    if (!input.trim()) {
+    const trimmedInput = input.trim();
+
+    if (!trimmedInput) {
       toast.error("Please enter a message");
       return;
     }
-    handleSubmit(e);
+
+    if (isLoading) {
+      return;
+    }
+
+    void sendMessage({ text: trimmedInput });
+    setInput("");
     setTimeout(() => inputRef.current?.focus(), 100);
   };
 
   const handleSuggestionClick = (suggestion: string) => {
-    if (inputRef.current) {
-      inputRef.current.value = suggestion;
-      handleInputChange({ target: { value: suggestion } } as any);
-      inputRef.current.focus();
-    }
+    setInput(suggestion);
+    inputRef.current?.focus();
   };
 
   const copyToClipboard = async (text: string, messageId: string) => {
@@ -77,15 +96,25 @@ export default function NutritionChatView() {
   };
 
   const getMessageContent = (message: any) => {
-    if (typeof message.content === "string") {
-      return message.content;
-    }
     if (message.parts) {
       return message.parts
         ?.map((part: any) => (part.type === "text" ? part.text : ""))
         .join("") || "";
     }
+    if (typeof message.content === "string") {
+      return message.content;
+    }
     return "";
+  };
+
+  const getMessageCreatedAt = (message: any): Date | null => {
+    const createdAt = message.createdAt;
+    if (!createdAt) {
+      return null;
+    }
+
+    const date = createdAt instanceof Date ? createdAt : new Date(createdAt);
+    return Number.isNaN(date.getTime()) ? null : date;
   };
 
   const suggestions = [
@@ -167,15 +196,15 @@ export default function NutritionChatView() {
 
                 {messages.map((message, index) => {
                   const content = getMessageContent(message);
+                  const createdAt = getMessageCreatedAt(message);
                   const isUser = message.role === "user";
                   const isLastMessage = index === messages.length - 1;
-                  
+
                   return (
                     <div
                       key={message.id}
-                      className={`flex gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500 ${
-                        isUser ? "justify-end" : "justify-start"
-                      }`}
+                      className={`flex gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500 ${isUser ? "justify-end" : "justify-start"
+                        }`}
                     >
                       {!isUser && (
                         <div className="flex-shrink-0">
@@ -187,14 +216,13 @@ export default function NutritionChatView() {
                           </div>
                         </div>
                       )}
-                      
+
                       <div className={`flex flex-col gap-2 max-w-[85%] md:max-w-[75%] ${isUser ? "items-end" : "items-start"}`}>
                         <div
-                          className={`group relative rounded-2xl px-5 py-4 shadow-lg transition-all duration-300 ${
-                            isUser
-                              ? "bg-gradient-to-br from-green-600 to-emerald-600 text-white rounded-br-sm"
-                              : "bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 text-foreground rounded-bl-sm border border-slate-200 dark:border-slate-700"
-                          }`}
+                          className={`group relative rounded-2xl px-5 py-4 shadow-lg transition-all duration-300 ${isUser
+                            ? "bg-gradient-to-br from-green-600 to-emerald-600 text-white rounded-br-sm"
+                            : "bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 text-foreground rounded-bl-sm border border-slate-200 dark:border-slate-700"
+                            }`}
                         >
                           {!isUser && (
                             <Button
@@ -211,7 +239,7 @@ export default function NutritionChatView() {
                               )}
                             </Button>
                           )}
-                          
+
                           <div className="prose prose-sm dark:prose-invert max-w-none">
                             {isUser ? (
                               <p className="whitespace-pre-wrap break-words text-white m-0">{content}</p>
@@ -220,14 +248,14 @@ export default function NutritionChatView() {
                             )}
                           </div>
                         </div>
-                        
-                        {message.createdAt && (
+
+                        {createdAt && (
                           <span className="text-xs text-muted-foreground px-2">
-                            {formatDistanceToNow(new Date(message.createdAt), { addSuffix: true })}
+                            {formatDistanceToNow(createdAt, { addSuffix: true })}
                           </span>
                         )}
                       </div>
-                      
+
                       {isUser && (
                         <div className="flex-shrink-0">
                           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg">
@@ -270,7 +298,7 @@ export default function NutritionChatView() {
                   <Input
                     ref={inputRef}
                     value={input}
-                    onChange={handleInputChange}
+                    onChange={(e) => setInput(e.target.value)}
                     placeholder="Ask about nutrition, meal plans, recipes..."
                     disabled={isLoading}
                     className="pr-12 h-12 text-base border-2 focus:border-green-500 focus:ring-green-500 rounded-xl shadow-sm"
@@ -300,7 +328,7 @@ export default function NutritionChatView() {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => reload()}
+                    onClick={() => void regenerate()}
                     disabled={isLoading}
                     title="Regenerate last response"
                     className="h-12 px-4 border-2 rounded-xl"

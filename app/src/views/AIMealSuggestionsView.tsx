@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useBMI } from "@/contexts/bmi-context";
 import { useRouter } from "next/navigation";
-import { ArrowRight, MapPin, Utensils } from "lucide-react";
+import { ArrowRight, MapPin, Utensils, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 /**
@@ -38,76 +38,29 @@ export default function AIMealSuggestionsView() {
 
     setLoading(true);
     
-    // Dummy response with restaurant recommendations
-    setTimeout(() => {
-      const dummyRestaurants = [
-        {
-          name: "Green Leaf Bistro",
-          dish: "Grilled Chicken Salad Bowl",
-          address: "123 Main Street",
-          distance: "0.5 miles",
-          cuisine: "Healthy",
-          price: "$$",
-          rating: 4.5,
-        },
-        {
-          name: "Mediterranean Delight",
-          dish: "Quinoa Power Bowl",
-          address: "456 Oak Avenue",
-          distance: "1.2 miles",
-          cuisine: "Mediterranean",
-          price: "$$",
-          rating: 4.7,
-        },
-        {
-          name: "Asian Fusion Kitchen",
-          dish: "Teriyaki Salmon with Brown Rice",
-          address: "789 Pine Road",
-          distance: "0.8 miles",
-          cuisine: "Asian",
-          price: "$$$",
-          rating: 4.6,
-        },
-        {
-          name: "Veggie Paradise",
-          dish: "Vegetable Stir Fry",
-          address: "321 Elm Street",
-          distance: "1.5 miles",
-          cuisine: "Vegetarian",
-          price: "$",
-          rating: 4.4,
-        },
-        {
-          name: "Protein House",
-          dish: "Lean Beef with Sweet Potato",
-          address: "654 Maple Drive",
-          distance: "0.9 miles",
-          cuisine: "American",
-          price: "$$",
-          rating: 4.8,
-        },
-      ];
+    try {
+      const response = await fetch("/api/ai-meal-suggestions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          preferences,
+          address,
+          city,
+          bmiData,
+        }),
+      });
 
-      // Filter based on user goal if available
-      let filteredRestaurants = dummyRestaurants;
-      if (bmiData.goal && bmiData.goal === "lose") {
-        filteredRestaurants = dummyRestaurants.filter(r => 
-          r.dish.toLowerCase().includes("salad") || 
-          r.dish.toLowerCase().includes("bowl") ||
-          r.cuisine === "Healthy"
-        );
-      } else if (bmiData.goal === "gain") {
-        filteredRestaurants = dummyRestaurants.filter(r => 
-          r.dish.toLowerCase().includes("protein") || 
-          r.dish.toLowerCase().includes("beef") ||
-          r.cuisine === "American"
-        );
-      }
+      if (!response.ok) throw new Error("Failed to generate recommendations");
 
-      setSuggestions(filteredRestaurants);
-      setLoading(false);
+      const data = await response.json();
+      setSuggestions(data.suggestions);
       toast.success("Meal recommendations generated!");
-    }, 2000);
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred while generating recommendations.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -115,7 +68,7 @@ export default function AIMealSuggestionsView() {
       <div className="max-w-4xl mx-auto">
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl md:text-3xl">Meal Recommender - Step 3</CardTitle>
+            <CardTitle className="text-2xl md:text-3xl">Meal Recommender</CardTitle>
             <CardDescription className="text-base">
               Get personalized meal recommendations with restaurant locations near you based on your preferences and health goals.
             </CardDescription>
@@ -166,6 +119,7 @@ export default function AIMealSuggestionsView() {
               className="w-full"
               size="lg"
             >
+              {loading && <RefreshCw className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Generating Recommendations..." : "Get Meal Recommendations"}
             </Button>
             
@@ -202,15 +156,6 @@ export default function AIMealSuggestionsView() {
                     </Card>
                   ))}
                 </div>
-
-                <Button
-                  onClick={() => router.push("/healthy-recipes")}
-                  className="w-full"
-                  size="lg"
-                >
-                  Continue to Recipe Generator
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
               </div>
             )}
           </CardContent>

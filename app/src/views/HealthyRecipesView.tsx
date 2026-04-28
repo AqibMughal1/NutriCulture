@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useBMI } from "@/contexts/bmi-context";
 import { useRouter } from "next/navigation";
-import { ArrowRight, ChefHat } from "lucide-react";
+import { ArrowRight, ChefHat, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 /**
@@ -33,94 +33,27 @@ export default function HealthyRecipesView() {
 
     setLoading(true);
     
-    // Dummy response - in real implementation, this would call an AI model
-    setTimeout(() => {
-      const ingredientList = ingredients.split(",").map(i => i.trim()).filter(Boolean);
-      
-      // Generate recipes based on user goal
-      let suggestedRecipes = [];
-      
-      if (bmiData.goal && bmiData.goal === "lose") {
-        suggestedRecipes = [
-          {
-            name: "Light Vegetable Stir Fry",
-            description: "A low-calorie, high-fiber dish perfect for weight loss",
-            ingredients: ingredientList.slice(0, 3).join(", ") + " (and more)",
-            calories: 250,
-            protein: "15g",
-            carbs: "30g",
-            fats: "8g",
-            healthBenefits: "High in fiber, low in calories, promotes satiety",
-            instructions: "1. Heat oil in a pan\n2. Add vegetables and stir fry for 5 minutes\n3. Season with herbs and spices\n4. Serve hot",
-          },
-          {
-            name: "Grilled Protein Salad",
-            description: "Lean protein with fresh vegetables",
-            ingredients: ingredientList.slice(0, 2).join(", ") + " (and more)",
-            calories: 300,
-            protein: "25g",
-            carbs: "20g",
-            fats: "10g",
-            healthBenefits: "High protein, low carb, helps maintain muscle mass",
-            instructions: "1. Grill your protein choice\n2. Prepare fresh salad\n3. Combine and add light dressing\n4. Enjoy",
-          },
-        ];
-      } else if (bmiData.goal === "gain") {
-        suggestedRecipes = [
-          {
-            name: "Protein-Rich Power Bowl",
-            description: "High-calorie, nutrient-dense meal for healthy weight gain",
-            ingredients: ingredientList.slice(0, 4).join(", ") + " (and more)",
-            calories: 550,
-            protein: "35g",
-            carbs: "60g",
-            fats: "18g",
-            healthBenefits: "High in protein and healthy fats, promotes muscle growth",
-            instructions: "1. Cook grains and proteins\n2. Add healthy fats (avocado, nuts)\n3. Combine all ingredients\n4. Top with seeds",
-          },
-          {
-            name: "Nutrient-Dense Smoothie Bowl",
-            description: "Calorie-rich smoothie with toppings",
-            ingredients: ingredientList.slice(0, 3).join(", ") + " (and more)",
-            calories: 450,
-            protein: "20g",
-            carbs: "65g",
-            fats: "15g",
-            healthBenefits: "Easy to digest, high in calories and nutrients",
-            instructions: "1. Blend fruits and protein\n2. Add nut butter and seeds\n3. Top with granola\n4. Serve immediately",
-          },
-        ];
-      } else {
-        suggestedRecipes = [
-          {
-            name: "Balanced Meal Plate",
-            description: "Well-rounded meal for maintaining healthy weight",
-            ingredients: ingredientList.slice(0, 3).join(", ") + " (and more)",
-            calories: 400,
-            protein: "25g",
-            carbs: "45g",
-            fats: "12g",
-            healthBenefits: "Balanced macronutrients, supports overall health",
-            instructions: "1. Prepare lean protein\n2. Add whole grains\n3. Include vegetables\n4. Add healthy fats",
-          },
-          {
-            name: "Mediterranean Style Bowl",
-            description: "Heart-healthy Mediterranean-inspired dish",
-            ingredients: ingredientList.slice(0, 4).join(", ") + " (and more)",
-            calories: 380,
-            protein: "20g",
-            carbs: "40g",
-            fats: "15g",
-            healthBenefits: "Rich in antioxidants, supports heart health",
-            instructions: "1. Prepare base (quinoa/rice)\n2. Add vegetables and protein\n3. Drizzle with olive oil\n4. Garnish with herbs",
-          },
-        ];
-      }
+    try {
+      const response = await fetch("/api/healthy-recipes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ingredients,
+          bmiData,
+        }),
+      });
 
-      setRecipes(suggestedRecipes);
-      setLoading(false);
+      if (!response.ok) throw new Error("Failed to generate healthy recipes");
+
+      const data = await response.json();
+      setRecipes(data.recipes);
       toast.success("Healthy recipes generated based on your goal!");
-    }, 2000);
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred while generating healthy recipes.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -128,7 +61,7 @@ export default function HealthyRecipesView() {
       <div className="max-w-4xl mx-auto">
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl md:text-3xl">Health Aware Recipe Generator - Step 4</CardTitle>
+            <CardTitle className="text-2xl md:text-3xl">Health Aware Recipe Generator</CardTitle>
             <CardDescription className="text-base">
               Enter the ingredients you have, and we'll suggest healthy recipes tailored to your health goals.
             </CardDescription>
@@ -161,6 +94,7 @@ export default function HealthyRecipesView() {
               className="w-full"
               size="lg"
             >
+              {loading && <RefreshCw className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Generating Healthy Recipes..." : "Generate Healthy Recipes"}
             </Button>
             
@@ -212,15 +146,6 @@ export default function HealthyRecipesView() {
                     </Card>
                   ))}
                 </div>
-
-                <Button
-                  onClick={() => router.push("/ingredient-substitution")}
-                  className="w-full"
-                  size="lg"
-                >
-                  Continue to Recipe Substitute Generator
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
               </div>
             )}
           </CardContent>

@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useBMI } from "@/contexts/bmi-context";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Upload, X, MessageCircle } from "lucide-react";
+import { ArrowRight, Upload, X, MessageCircle, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 
@@ -52,55 +52,29 @@ export default function NutritionAnalysisView() {
     
     setLoading(true);
     
-    // Dummy response - in real implementation, this would call an AI model
-    setTimeout(() => {
-      const dummyDishes = [
-        { name: "Grilled Chicken Salad", weight: estimatedWeight || "250g" },
-        { name: "Pasta Carbonara", weight: estimatedWeight || "300g" },
-        { name: "Vegetable Stir Fry", weight: estimatedWeight || "200g" },
-        { name: "Beef Burger", weight: estimatedWeight || "350g" },
-        { name: "Salmon with Rice", weight: estimatedWeight || "400g" },
-      ];
-      
-      const randomDish = dummyDishes[Math.floor(Math.random() * dummyDishes.length)];
-      
-      // Generate dummy nutrition data
-      const weightInGrams = weightUnit === "g" 
-        ? parseFloat(estimatedWeight) || 250
-        : weightUnit === "oz"
-        ? (parseFloat(estimatedWeight) || 8.8) * 28.35
-        : (parseFloat(estimatedWeight) || 0.55) * 453.592;
+    try {
+      const response = await fetch("/api/nutrition-analysis", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          image: preview,
+          estimatedWeight,
+          weightUnit,
+          bmiData,
+        }),
+      });
 
-      const analysisData = {
-        dishName: randomDish.name,
-        weight: `${weightInGrams.toFixed(0)}g`,
-        nutrition: {
-          calories: Math.round(weightInGrams * 1.5),
-          protein: `${(weightInGrams * 0.15).toFixed(1)}g`,
-          carbs: `${(weightInGrams * 0.25).toFixed(1)}g`,
-          fats: `${(weightInGrams * 0.08).toFixed(1)}g`,
-          fiber: `${(weightInGrams * 0.03).toFixed(1)}g`,
-          sodium: `${(weightInGrams * 0.4).toFixed(0)}mg`,
-        },
-        vitamins: {
-          vitaminA: "450 IU",
-          vitaminC: "25mg",
-          vitaminD: "2.5 IU",
-          vitaminE: "3.2mg",
-          vitaminK: "45mcg",
-        },
-        minerals: {
-          calcium: "120mg",
-          iron: "2.5mg",
-          potassium: "350mg",
-          magnesium: "45mg",
-        },
-      };
+      if (!response.ok) throw new Error("Failed to analyze nutrition");
 
-      setAnalysis(analysisData);
-      setLoading(false);
+      const data = await response.json();
+      setAnalysis(data);
       toast.success("Nutrition analysis completed!");
-    }, 2000);
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred while analyzing nutrition.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -108,7 +82,7 @@ export default function NutritionAnalysisView() {
       <div className="max-w-4xl mx-auto">
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl md:text-3xl">Food Nutrition Analysis - Step 2</CardTitle>
+            <CardTitle className="text-2xl md:text-3xl">Food Nutrition Analysis</CardTitle>
             <CardDescription className="text-base">
               Upload a picture of your meal and optionally provide the estimated weight to get detailed nutrition information.
             </CardDescription>
@@ -199,6 +173,7 @@ export default function NutritionAnalysisView() {
               className="w-full"
               size="lg"
             >
+              {loading && <RefreshCw className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Analyzing Image..." : "Analyze Nutrition"}
             </Button>
             
@@ -264,15 +239,6 @@ export default function NutritionAnalysisView() {
                     </div>
                   </CardContent>
                 </Card>
-
-                <Button
-                  onClick={() => router.push("/ai-meal-suggestions")}
-                  className="w-full"
-                  size="lg"
-                >
-                  Continue to Meal Recommender
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
               </div>
             )}
           </CardContent>

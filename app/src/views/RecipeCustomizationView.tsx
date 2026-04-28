@@ -30,72 +30,27 @@ export default function RecipeCustomizationView() {
 
     setLoading(true);
     
-    // Dummy response - in real implementation, this would call an AI model
-    setTimeout(() => {
-      const ingredientList = availableIngredients.split(",").map(i => i.trim()).filter(Boolean);
-      
-      // Generate minimal ingredient recipes based on goal
-      let recipes = [];
-      
-      if (bmiData.goal === "lose") {
-        recipes = [
-          {
-            name: "Simple Veggie Bowl",
-            originalIngredients: "chicken, rice, heavy cream, butter",
-            substitutedIngredients: ingredientList.slice(0, 3).join(", ") + " (minimal ingredients)",
-            calories: 220,
-            protein: "12g",
-            carbs: "25g",
-            fats: "6g",
-            whyHealthy: "Uses minimal ingredients, low in calories, high in fiber",
-            instructions: `1. Prepare ${ingredientList[0] || "vegetables"}\n2. Lightly steam or sauté\n3. Season with herbs\n4. Serve simple and fresh`,
-          },
-          {
-            name: "Quick Protein Salad",
-            originalIngredients: "fried chicken, white bread, mayo",
-            substitutedIngredients: ingredientList.slice(0, 2).join(", ") + " (simple preparation)",
-            calories: 180,
-            protein: "15g",
-            carbs: "15g",
-            fats: "5g",
-            whyHealthy: "Minimal processing, fresh ingredients, low calorie",
-            instructions: `1. Use fresh ${ingredientList[0] || "greens"}\n2. Add ${ingredientList[1] || "protein"} if available\n3. Light dressing\n4. Ready in minutes`,
-          },
-        ];
-      } else if (bmiData.goal === "gain") {
-        recipes = [
-          {
-            name: "High-Calorie Power Mix",
-            originalIngredients: "simple salad, water",
-            substitutedIngredients: ingredientList.slice(0, 3).join(", ") + " (calorie-dense)",
-            calories: 480,
-            protein: "28g",
-            carbs: "55g",
-            fats: "20g",
-            whyHealthy: "Uses minimal ingredients but maximizes calories and nutrients",
-            instructions: `1. Combine ${ingredientList[0] || "grains"} with ${ingredientList[1] || "protein"}\n2. Add healthy fats\n3. Simple preparation\n4. High calorie content`,
-          },
-        ];
-      } else {
-        recipes = [
-          {
-            name: "Balanced Simple Meal",
-            originalIngredients: "processed food, high sodium items",
-            substitutedIngredients: ingredientList.slice(0, 3).join(", ") + " (whole foods)",
-            calories: 350,
-            protein: "20g",
-            carbs: "40g",
-            fats: "12g",
-            whyHealthy: "Minimal ingredients, whole foods, balanced nutrition",
-            instructions: `1. Use ${ingredientList[0] || "whole grains"}\n2. Add ${ingredientList[1] || "lean protein"}\n3. Include ${ingredientList[2] || "vegetables"}\n4. Simple and balanced`,
-          },
-        ];
-      }
+    try {
+      const response = await fetch("/api/recipe-customization", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          availableIngredients,
+          bmiData,
+        }),
+      });
 
-      setSubstitutedRecipes(recipes);
-      setLoading(false);
+      if (!response.ok) throw new Error("Failed to generate customized recipes");
+
+      const data = await response.json();
+      setSubstitutedRecipes(data.recipes);
       toast.success("Healthy substitute recipes generated!");
-    }, 2000);
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred while generating customized recipes.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -103,7 +58,7 @@ export default function RecipeCustomizationView() {
       <div className="max-w-4xl mx-auto">
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl md:text-3xl">Recipe Substitute Generator - Step 5</CardTitle>
+            <CardTitle className="text-2xl md:text-3xl">Recipe Substitute Generator</CardTitle>
             <CardDescription className="text-base">
               Enter the minimum ingredients you have, and we'll create healthy dishes tailored to your goal with minimal ingredients.
             </CardDescription>
@@ -136,7 +91,7 @@ export default function RecipeCustomizationView() {
               className="w-full"
               size="lg"
             >
-              <RefreshCw className="mr-2 h-4 w-4" />
+              <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
               {loading ? "Generating Substitutes..." : "Generate Healthy Substitutes"}
             </Button>
             
@@ -187,12 +142,6 @@ export default function RecipeCustomizationView() {
                       </CardContent>
                     </Card>
                   ))}
-                </div>
-
-                <div className="p-4 bg-green-50 dark:bg-green-950/30 rounded-lg">
-                  <p className="text-sm text-green-700 dark:text-green-300 font-semibold">
-                    🎉 You've completed the full workflow! All modules have used your BMI data to provide personalized recommendations.
-                  </p>
                 </div>
               </div>
             )}

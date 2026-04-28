@@ -5,4 +5,5 @@ const openrouter = createOpenRouter({
 });
 
 export const chatModel = openrouter.chat("openrouter/free") as any;
+export const visionModel = openrouter.chat("openrouter/free") as any;
 

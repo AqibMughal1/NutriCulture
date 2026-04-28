@@ -167,7 +167,10 @@ export default function GetStartedView() {
               <Edit className="h-7 w-7 text-white" />
             </div>
             <h3 className="text-lg font-bold text-foreground group-hover:text-purple-600 transition-colors duration-300 flex-1 leading-tight">Recipe Customization</h3>
-            <span className="bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow flex-shrink-0">FREE</span>
+            <span className={`text-white text-xs font-bold px-3 py-1 rounded-full shadow flex items-center gap-1.5 flex-shrink-0 ${hasPremiumAccess ? 'bg-gradient-to-r from-green-500 to-emerald-500' : 'bg-gradient-to-r from-purple-500 to-pink-500'}`}>
+              <Crown className="h-3 w-3" />
+              {hasPremiumAccess ? 'UNLOCKED' : 'PREMIUM'}
+            </span>
           </div>
           <p className="text-sm text-muted-foreground mb-5 leading-relaxed relative z-10">
             Enter your ingredients and get healthy recipe suggestions tailored to your BMI goal.
@@ -176,8 +179,10 @@ export default function GetStartedView() {
             {["Enter ingredients you have available", "Healthy recipe suggestions", "Recipes optimized for your BMI goal"].map(f => <FeatureItem key={f} text={f} />)}
           </ul>
           <div className="mt-5 relative z-10">
-            <Button className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group" onClick={() => handleFeature("/recipe-customization", "Recipe Customization")}>
-              <Edit className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
+            <Button className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group" onClick={() => handleFeature("/recipe-customization", "Recipe Customization", true)}>
+              {hasPremiumAccess
+                ? <Edit className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
+                : <Lock className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-300" />}
               Customize Recipe
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
             </Button>
@@ -191,7 +196,10 @@ export default function GetStartedView() {
               <ChefHat className="h-7 w-7 text-white" />
             </div>
             <h3 className="text-lg font-bold text-foreground group-hover:text-orange-600 transition-colors duration-300 flex-1 leading-tight">Healthy Recipes</h3>
-            <span className="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow flex-shrink-0">FREE</span>
+            <span className={`text-white text-xs font-bold px-3 py-1 rounded-full shadow flex items-center gap-1.5 flex-shrink-0 ${hasPremiumAccess ? 'bg-gradient-to-r from-green-500 to-emerald-500' : 'bg-gradient-to-r from-orange-500 to-red-500'}`}>
+              <Crown className="h-3 w-3" />
+              {hasPremiumAccess ? 'UNLOCKED' : 'PREMIUM'}
+            </span>
           </div>
           <p className="text-sm text-muted-foreground mb-5 leading-relaxed relative z-10">
             Browse a curated library of healthy recipes optimized for your specific BMI goal.
@@ -200,8 +208,10 @@ export default function GetStartedView() {
             {["Browse curated healthy recipes", "Filtered by your health goal", "Easy-to-follow instructions"].map(f => <FeatureItem key={f} text={f} />)}
           </ul>
           <div className="mt-5 relative z-10">
-            <Button className="w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group" onClick={() => handleFeature("/healthy-recipes", "Healthy Recipes")}>
-              <ChefHat className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
+            <Button className="w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group" onClick={() => handleFeature("/healthy-recipes", "Healthy Recipes", true)}>
+              {hasPremiumAccess
+                ? <ChefHat className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
+                : <Lock className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-300" />}
               Browse Recipes
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
             </Button>
@@ -244,7 +254,10 @@ export default function GetStartedView() {
               <MessageCircle className="h-7 w-7 text-white" />
             </div>
             <h3 className="text-lg font-bold text-foreground group-hover:text-indigo-600 transition-colors duration-300 flex-1 leading-tight">Nutrition Chat</h3>
-            <span className="bg-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow flex-shrink-0">FREE</span>
+            <span className={`text-white text-xs font-bold px-3 py-1 rounded-full shadow flex items-center gap-1.5 flex-shrink-0 ${hasPremiumAccess ? 'bg-gradient-to-r from-green-500 to-emerald-500' : 'bg-gradient-to-r from-indigo-500 to-purple-500'}`}>
+              <Crown className="h-3 w-3" />
+              {hasPremiumAccess ? 'UNLOCKED' : 'PREMIUM'}
+            </span>
           </div>
           <p className="text-sm text-muted-foreground mb-5 leading-relaxed relative z-10">
             Chat with an AI nutritionist about meal plans, recipes, and get personalized dietary advice.
@@ -253,8 +266,10 @@ export default function GetStartedView() {
             {["Ask any nutrition question", "Recreate meal plans you don't like", "Personalized dietary advice"].map(f => <FeatureItem key={f} text={f} />)}
           </ul>
           <div className="mt-5 relative z-10">
-            <Button className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group" onClick={() => handleFeature("/nutrition-chat", "Nutrition Chat")}>
-              <MessageCircle className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
+            <Button className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group" onClick={() => handleFeature("/nutrition-chat", "Nutrition Chat", true)}>
+              {hasPremiumAccess
+                ? <MessageCircle className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
+                : <Lock className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-300" />}
               Start Chatting
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
             </Button>

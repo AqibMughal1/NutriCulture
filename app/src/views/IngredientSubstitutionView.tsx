@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { RefreshCw } from "lucide-react";
+import { toast } from "sonner";
 
 /**
  * Ingredient Substitution Generator View
@@ -20,11 +22,24 @@ export default function IngredientSubstitutionView() {
   const handleGenerateSubstitutions = async () => {
     // TODO: Implement AI API call to analyze recipe and suggest healthier alternatives
     setLoading(true);
-    // Placeholder for AI integration
-    setTimeout(() => {
-      setSubstitutions("Healthier ingredient substitutions will appear here...");
+    try {
+      const response = await fetch("/api/ingredient-substitution", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recipe }), // bmiData could be added if context was used here, but it's not currently imported.
+      });
+
+      if (!response.ok) throw new Error("Failed to generate substitutions");
+
+      const data = await response.json();
+      setSubstitutions(data.substitutions);
+      toast.success("Healthier alternatives generated!");
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred while generating substitutions.");
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -49,6 +64,7 @@ export default function IngredientSubstitutionView() {
               />
             </div>
             <Button onClick={handleGenerateSubstitutions} disabled={loading || !recipe}>
+              {loading && <RefreshCw className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Analyzing Recipe..." : "Generate Substitutions"}
             </Button>
             

@@ -1,17 +1,11 @@
 import { chatModel } from "@/lib/ai/model";
-import {
-  CHAT_SYSTEM_PROMPT,
-  EXISTING_DEPLOYMENT_GUIDE_PROMPT,
-  NEW_DEPLOYMENT_GUIDE_SYSTEM_PROMPT,
-  UPLOAD_CONFIG_OPTIMIZATION_PROMPT,
-} from "@/lib/ai/prompt";
+import { NUTRITION_CHAT_SYSTEM_PROMPT } from "@/lib/ai/prompt";
 import { currentSession } from "@/lib/api/user";
 import { db } from "@/lib/db";
 import { messages as messagesTable } from "@/lib/db/schema";
 import {
   generateUUID,
   getMostRecentUserMessage,
-  getTrailingMessageId,
 } from "@/lib/utils";
 import { streamText } from "ai";
 import { notFound, redirect } from "next/navigation";
@@ -20,42 +14,10 @@ import { NextRequest } from "next/server";
 export const maxDuration = 60; // to extend vercel serverless function limit
 
 const getSystemPrompt = async (
-  type:
-    | "new-deployment-guide"
-    | "existing-deployment-guide"
-    | "submit-requirements-to-get-deployment-guide"
-    | "upload-config-to-get-recommendations",
+  type: string,
   project?: any
 ) => {
-  if (type === "new-deployment-guide") {
-    return NEW_DEPLOYMENT_GUIDE_SYSTEM_PROMPT;
-  }
-  if (type === "existing-deployment-guide") {
-    return EXISTING_DEPLOYMENT_GUIDE_PROMPT;
-  }
-  if (type === "upload-config-to-get-recommendations") {
-    const configContent = project?.configFileContent || "";
-    const optimizationFocus = project?.optimizationType || "balanced";
-    const optimizationContext = `
-    
-OPTIMIZATION FOCUS: ${optimizationFocus.toUpperCase()}
-OPTIMIZATION TYPE: ${optimizationFocus}
-
-${configContent
-        ? `CONFIGURATION FILE CONTENT:
-\`\`\`
-${configContent}
-\`\`\``
-        : "No configuration file uploaded yet. Please ask the user to upload their cloud configuration file first."
-      }
-    `;
-
-    return UPLOAD_CONFIG_OPTIMIZATION_PROMPT + optimizationContext;
-  }
-  if (type === "submit-requirements-to-get-deployment-guide") {
-    return CHAT_SYSTEM_PROMPT; // Use general chat prompt for requirements submission
-  }
-  return CHAT_SYSTEM_PROMPT;
+  return NUTRITION_CHAT_SYSTEM_PROMPT;
 };
 
 export async function POST(request: NextRequest) {

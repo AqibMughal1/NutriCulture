@@ -41,7 +41,7 @@ export const Testimonials = () => {
       name: 'John Doe',
       avatar: '/testimonials/john-doe.jpg',
       message:
-        'NutriCulture exceeded my expectations with its robust AI-driven nutrition recommendations. It's truly next-level innovation!'
+        "NutriCulture exceeded my expectations with its robust AI-driven nutrition recommendations. It's truly next-level innovation!"
     },
     {
       name: 'John Doe',
@@ -53,7 +53,7 @@ export const Testimonials = () => {
       name: 'John Doe',
       avatar: '/testimonials/john-doe.jpg',
       message:
-        'With NutriCulture, I've been able to streamline my meal planning and achieve better health. Fantastic product!'
+        "With NutriCulture, I've been able to streamline my meal planning and achieve better health. Fantastic product!"
     },
     {
       name: 'John Doe',
@@ -62,7 +62,7 @@ export const Testimonials = () => {
         'The level of personalization provided by NutriCulture has revolutionized how I manage my nutrition. Absolutely incredible!'
     }
   ];
-  
+
   return (
     <div>
       {/* Section Title */}
